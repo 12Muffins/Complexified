@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "c_complexified:block/resin_extractor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "c_complexified:block/resin_extractor"
+    },
+    "facing=south": {
+      "model": "c_complexified:block/resin_extractor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "c_complexified:block/resin_extractor",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "grate=all": {
+      "model": "c_complexified:block/boiler_heater_grate_all"
+    },
+    "grate=e": {
+      "model": "c_complexified:block/boiler_heater_grate_e"
+    },
+    "grate=n": {
+      "model": "c_complexified:block/boiler_heater_grate_n"
+    },
+    "grate=ne": {
+      "model": "c_complexified:block/boiler_heater_grate_ne"
+    },
+    "grate=none": {
+      "model": "c_complexified:block/boiler_heater_grate_none"
+    },
+    "grate=nw": {
+      "model": "c_complexified:block/boiler_heater_grate_nw"
+    },
+    "grate=s": {
+      "model": "c_complexified:block/boiler_heater_grate_s"
+    },
+    "grate=se": {
+      "model": "c_complexified:block/boiler_heater_grate_se"
+    },
+    "grate=sw": {
+      "model": "c_complexified:block/boiler_heater_grate_sw"
+    },
+    "grate=w": {
+      "model": "c_complexified:block/boiler_heater_grate_w"
+    }
+  }
+}

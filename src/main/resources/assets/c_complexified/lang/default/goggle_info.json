@@ -1,0 +1,20 @@
+{
+  "c_complexified.util.in_bracket": " (%1$s)",
+
+  "c_complexified.heater.heat": "Heat",
+  "c_complexified.heater.heat_dots": "...... ",
+  "c_complexified.heater.inactive": "Inactive",
+  "c_complexified.heater.active": "Heating",
+  "c_complexified.heater.superheated": "Max",
+  "c_complexified.heater.flow_rate": "Rate",
+  "c_complexified.heater.flow_rate_dots": "...... ",
+  "c_complexified.heater.status": "Heater Status:  %1$s",
+  "c_complexified.heater.size": "Size",
+  "c_complexified.heater.size_dots": "....... ",
+  "c_complexified.heater.size.small": "Small",
+  "c_complexified.heater.size.medium": "Medium",
+  "c_complexified.heater.unsufficient_rate": "Fluid input rate",
+  "c_complexified.heater.per_tick": "%1$s per Tick",
+  "c_complexified.heater.is_full": "",
+  "c_complexified.heater.size.large": "Large"
+}

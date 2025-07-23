@@ -1,0 +1,7 @@
+{
+    "parent": "c_complexified:block/industrial_heater/textures",
+    "loader": "forge:obj",
+    "flip_v": true,
+    "model": "c_complexified:models/block/industrial_heater/industrial_heater.obj",
+    "render_type": "cutout_mipped"
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "c_complexified:block/boiler_heater/grate",
+  "textures": {
+    "grate": "c_complexified:block/boiler_heater/grate_middle"
+  }
+}

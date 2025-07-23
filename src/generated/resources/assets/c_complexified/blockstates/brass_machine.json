@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "c_complexified:block/brass_machine",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "c_complexified:block/brass_machine"
+    },
+    "facing=south": {
+      "model": "c_complexified:block/brass_machine",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "c_complexified:block/brass_machine",
+      "y": 270
+    }
+  }
+}

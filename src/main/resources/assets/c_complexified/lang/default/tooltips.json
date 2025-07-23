@@ -1,0 +1,5 @@
+{
+  "block.c_complexified.heater.tooltip.summary": "A _heater_ that is used to _steam_ water in a _boiler_.",
+  "block.c_complexified.heater.tooltip.condition1": "When filled with hot fluid",
+  "block.c_complexified.heater.tooltip.behaviour1": "Outputs _heat_ proportional in the _input_ _rate_ of the _fluid_."
+}

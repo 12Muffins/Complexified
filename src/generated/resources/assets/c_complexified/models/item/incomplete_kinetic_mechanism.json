@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "c_complexified:item/incomplete_kinetic_mechanism"
+  }
+}

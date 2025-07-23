@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "c_complexified:fluid/spruce_resin_flow"
+    },
+    {
+      "type": "single",
+      "resource": "c_complexified:fluid/spruce_resin_still"
+    },
+    {
+      "type": "single",
+      "resource": "c_complexified:fluid/pahoehoe_flow"
+    },
+    {
+      "type": "single",
+      "resource": "c_complexified:fluid/pahoehoe_still"
+    }
+  ]
+}

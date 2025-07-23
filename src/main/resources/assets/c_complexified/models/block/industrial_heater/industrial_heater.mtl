@@ -1,0 +1,9 @@
+# Made in Blockbench 4.12.5
+newmtl side
+map_Kd #side
+newmtl boiler_grate
+map_Kd #boiler_grate
+newmtl fin
+map_Kd #fin
+newmtl boiler_plate
+map_Kd #boiler_plate

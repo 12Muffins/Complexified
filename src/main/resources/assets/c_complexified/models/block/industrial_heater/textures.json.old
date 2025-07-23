@@ -1,0 +1,11 @@
+{
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"boiler_grate": "c_complexified:block/heater/boiler_grate",
+		"boiler_plate": "c_complexified:block/heater/boiler_plate",
+		"fin": "c_complexified:block/heater/fin",
+		"side": "c_complexified:block/heater/side",
+		"particle": "create:block/industrial_iron_block"
+	}
+}

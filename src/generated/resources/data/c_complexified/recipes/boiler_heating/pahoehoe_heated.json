@@ -1,0 +1,16 @@
+{
+  "type": "c_complexified:boiler_heating",
+  "ingredients": [
+    {
+      "amount": 1,
+      "fluid": "minecraft:lava",
+      "nbt": {}
+    }
+  ],
+  "results": [
+    {
+      "amount": 1,
+      "fluid": "c_complexified:pahoehoe"
+    }
+  ]
+}

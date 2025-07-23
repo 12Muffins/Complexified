@@ -1,0 +1,9 @@
+{
+  "textures": {
+    "grate": "c_complexified:block/boiler_heater/grate_middle"
+  },
+  "loader": "forge:obj",
+  "flip_v": true,
+  "model": "c_complexified:models/block/boiler_heater/grate/grate.obj",
+  "render_type": "cutout_mipped"
+}
