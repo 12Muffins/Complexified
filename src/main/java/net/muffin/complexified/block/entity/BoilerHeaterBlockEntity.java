@@ -86,7 +86,6 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
         fluidCapability = LazyOptional.of(() -> tankInventory);
         updateConnectivity = false;
         updateCapability = false;
-//        height = 1;
         width = 1;
         refreshCapability();
     }

@@ -14,20 +14,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.*;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,7 +24,6 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.muffin.complexified.Complexified;
 import net.muffin.complexified.item.ComplexifiedCreativeModeTabs;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 
@@ -53,8 +40,6 @@ public class ModFluids {
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> RESIN =
             REGISTRATE.standardFluid("spruce_resin")
-//            REGISTRATE.standardFluid("spruce_resin", ModFluids.SolidRenderedPlaceableFluidType.create(0xEAAE2F,
-//                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
                     .lang("Spruce Resin")
                     .properties(b -> b.viscosity(2000)
                             .density(1400))
@@ -72,11 +57,16 @@ public class ModFluids {
                     .build()
                     .register();
 
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> PAHOEHOE =
-            REGISTRATE.standardFluid("pahoehoe", SolidRenderedPlaceableFluidType.create(0x573431,
-                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
+    public static final FluidEntry<Pahoehoe.Flowing> PAHOEHOE =
+            REGISTRATE.fluid("pahoehoe",
+                            new ResourceLocation(Complexified.MOD_ID, "fluid/pahoehoe_still"),
+                            new ResourceLocation(Complexified.MOD_ID, "fluid/pahoehoe_flow"),
+                            SolidRenderedPlaceableFluidType.create(0x573431,
+                                    () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()),
+                            Pahoehoe.Flowing::new
+                    )
                     .lang("Pahoehoe")
-                    .properties(b -> b.viscosity(2000)
+                    .properties(b -> b.viscosity(2000).fallDistanceModifier(1)
                             .density(1400))
                     .fluidProperties(p -> p.levelDecreasePerBlock(2)
                             .tickRate(25)
@@ -90,6 +80,45 @@ public class ModFluids {
                     .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
                     .build()
                     .register();
+
+//    public static final FluidEntry<ForgeFlowingFluid.Flowing> PAHOEHOE =
+//            REGISTRATE.standardFluid("pahoehoe", SolidRenderedPlaceableFluidType.create(0x573431,
+//                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
+//                    .lang("Pahoehoe")
+//                    .properties(b -> b.viscosity(2000)
+//                            .density(1400))
+//                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
+//                            .tickRate(25)
+//                            .slopeFindDistance(3)
+//                            .explosionResistance(100f))
+//                    .source(Pahoehoe.Source::new)
+//                    .block()
+//                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10).randomTicks().liquid())
+//                    .build()
+//                    .bucket() // Add ItemTag
+//                    .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
+//                    .build()
+//                    .register();
+
+//    public static final FluidEntry<ForgeFlowingFluid.Flowing> PAHOEHOE =
+//            REGISTRATE.standardFluid("pahoehoe", SolidRenderedPlaceableFluidType.create(0x573431,
+//                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
+//                    .lang("Pahoehoe")
+//                    .properties(b -> b.viscosity(2000)
+//                            .density(1400))
+//                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
+//                            .tickRate(25)
+//                            .slopeFindDistance(3)
+//                            .explosionResistance(100f))
+//                    .source(Pahoehoe.Flowing::new)
+//                    .block()
+//                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10).randomTicks().liquid())
+//                    .build()
+//                    .bucket() // Add ItemTag
+//                    .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
+//                    .build()
+//                    .register();
+
 
     public static void register() {
     }
@@ -206,56 +235,44 @@ public class ModFluids {
         }
     }
 
-    public abstract class Pahoehoe extends LavaFluid {
-
-//        public Pahoehoe(Properties properties) {
-//            super(properties);
-//            LOGGER.info("Constructed Pahoehoe");
-//        }
-
-        public static class Flowing extends ForgeFlowingFluid.Flowing {
-            public Flowing(Properties properties) {
-                super(properties);
-            }
-
-            protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> pBuilder) {
-                super.createFluidStateDefinition(pBuilder);
-                pBuilder.add(LEVEL);
-            }
-
-            public int getAmount(FluidState pState) {
-                return pState.getValue(LEVEL);
-            }
-
-            public boolean isSource(FluidState pState) {
-                return false;
-            }
-        }
-
-        public static class Source extends ForgeFlowingFluid.Source {
-            public Source(Properties properties) {
-                super(properties);
-            }
-
-            public int getAmount(FluidState pState) {
-                return 8;
-            }
-
-            public boolean isSource(FluidState pState) {
-                return true;
-            }
-        }
-//        // TODO Add particle
-//        @Override
-//        protected @Nullable ParticleOptions getDripParticle() {
-//            LOGGER.info("Called getDripParticle()");
-//            return super.getDripParticle();
+//    public abstract class Pahoehoe extends ForgeFlowingFluid {
+//        public static class Flowing extends Pahoehoe {
+//            protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> pBuilder) {
+//                super.createFluidStateDefinition(pBuilder);
+//                pBuilder.add(LEVEL);
+//            }
+//
+//            public int getAmount(FluidState pState) {
+//                return pState.getValue(LEVEL);
+//            }
+//
+//            public boolean isSource(FluidState pState) {
+//                return false;
+//            }
 //        }
 //
-//        @Override
-//        protected boolean isRandomlyTicking() {
-//            LOGGER.info("Called isRandomlyTicking()");
-//            return true;
+//        public static class Source extends Pahoehoe {
+//            public Source(Properties properties) {
+//                super(properties);
+//            }
+//
+//            public int getAmount(FluidState pState) {
+//                return 8;
+//            }
+//
+//            @Override
+//            protected void randomTick(Level pLevel, BlockPos pPos, FluidState pState, RandomSource pRandom) {
+//            }
+//
+//            @Override
+//            protected boolean isRandomlyTicking() {
+//                LOGGER.info("Called isRandomlyTicking()");
+//                return true;
+//            }
+//
+//            public boolean isSource(FluidState pState) {
+//                return true;
+//            }
 //        }
 //
 //        @Override
@@ -276,68 +293,5 @@ public class ModFluids {
 //                }
 //            }
 //        }
-//
-//        @Override
-//        protected void randomTick(Level pLevel, BlockPos pPos, FluidState pState, RandomSource pRandom) {
-//            LOGGER.info("Called randomTick()");
-//
-//            if (pLevel.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) {
-//                int i = pRandom.nextInt(3);
-//                if (i > 0) {
-//                    BlockPos blockpos = pPos;
-//
-//                    for(int j = 0; j < i; ++j) {
-//                        blockpos = blockpos.offset(pRandom.nextInt(3) - 1, 1, pRandom.nextInt(3) - 1);
-//                        if (!pLevel.isLoaded(blockpos)) {
-//                            return;
-//                        }
-//
-//                        BlockState blockstate = pLevel.getBlockState(blockpos);
-//                        if (blockstate.isAir()) {
-//                            if (this.hasFlammableNeighbours(pLevel, blockpos)) {
-//                                pLevel.setBlockAndUpdate(blockpos, net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(pLevel, blockpos, pPos, Blocks.FIRE.defaultBlockState()));
-//                                return;
-//                            }
-//                        } else if (blockstate.blocksMotion()) {
-//                            return;
-//                        }
-//                    }
-//                } else {
-//                    for(int k = 0; k < 3; ++k) {
-//                        BlockPos blockpos1 = pPos.offset(pRandom.nextInt(3) - 1, 0, pRandom.nextInt(3) - 1);
-//                        if (!pLevel.isLoaded(blockpos1)) {
-//                            return;
-//                        }
-//
-//                        if (pLevel.isEmptyBlock(blockpos1.above()) && this.isFlammable(pLevel, blockpos1, Direction.UP)) {
-//                            pLevel.setBlockAndUpdate(blockpos1.above(), net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(pLevel, blockpos1.above(), pPos, Blocks.FIRE.defaultBlockState()));
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//        private boolean hasFlammableNeighbours(LevelReader pLevel, BlockPos pPos) {
-//            for(Direction direction : Direction.values()) {
-//                if (this.isFlammable(pLevel, pPos.relative(direction), direction.getOpposite())) {
-//                    return true;
-//                }
-//            }
-//
-//            return false;
-//        }
-//        private boolean isFlammable(LevelReader level, BlockPos pos, Direction face) {
-//            return (pos.getY() < level.getMinBuildHeight() ||
-//                    pos.getY() >= level.getMaxBuildHeight() ||
-//                    level.hasChunkAt(pos)) && level.getBlockState(pos).isFlammable(level, pos, face);
-//        }
-//
-//        @Override
-//        protected boolean canConvertToSource(Level level) {
-//            LOGGER.info("Called canConvertToSource()");
-//            return level.getGameRules().getBoolean(GameRules.RULE_LAVA_SOURCE_CONVERSION);
-//        }
 //    }
-    }
 }
