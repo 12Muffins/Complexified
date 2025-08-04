@@ -2,6 +2,9 @@ package net.muffin.complexified.block;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.content.decoration.bracket.BracketBlock;
+import com.simibubi.create.content.decoration.bracket.BracketBlockItem;
+import com.simibubi.create.content.decoration.bracket.BracketGenerator;
 import com.simibubi.create.content.fluids.tank.FluidTankModel;
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.BlockStateGen;
@@ -19,8 +22,10 @@ import net.muffin.complexified.foundation.block.behaviour.mounted.ComplexifiedMo
 import net.muffin.complexified.foundation.block.behaviour.mounted.boiler.BoilerHeaterMountedStorageType;
 import net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater.BoilerHeaterGenerator;
 import net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater.BoilerHeaterModel;
+import net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater.HeatingElementGenerator;
 import net.muffin.complexified.item.BoilerHeaterBlockItem;
 import net.muffin.complexified.item.ComplexifiedCreativeModeTabs;
+import net.muffin.complexified.item.HeatingElementBlockItem;
 import net.muffin.complexified.tag.ModTags;
 
 import static com.simibubi.create.api.behaviour.movement.MovementBehaviour.movementBehaviour;
@@ -100,17 +105,6 @@ public class ModBlocks {
             .simpleItem()
             .register();
 
-    public static final BlockEntry<BoilerHeaterBlockOld> BOILER_HEATER_OLD =
-            REGISTRATE.block("industrial_heater", BoilerHeaterBlockOld::new)
-                    .initialProperties(SharedProperties::netheriteMetal)
-                    .properties(p -> p.mapColor(MapColor.STONE).noOcclusion())
-                    .transform(axeOrPickaxe()).defaultLoot()
-                    .blockstate((c, p) -> simpleBlock(c, p,
-                            s -> AssetLookup.partialBaseModel(c, p)))
-                    .onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.c_complexified.heater"))
-                    .item(BoilerHeaterBlockItem::new).transform(customItemModel())
-                    .register();
-
     // texture
 
     public static final BlockEntry<BoilerHeaterBlock> BOILER_HEATER =
@@ -127,17 +121,17 @@ public class ModBlocks {
                     .build()
                     .register();
 
+    public static final BlockEntry<HeatingElementBlock> COPPER_HEATING_ELEMENT = REGISTRATE.block("copper_heating_element", HeatingElementBlock::new)
+            .blockstate(new HeatingElementGenerator("copper")::generate)
+            .properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+            .transform(pickaxeOnly())
+            .item(HeatingElementBlockItem::new)
+            .tag(ModTags.ItemTags.HEATING_ELEMENT.tag)
+            .transform(HeatingElementGenerator.itemModel("copper"))
+            .register();
 
-    public static final BlockEntry<BoilerHeaterStructuralBlock> BOILER_HEATER_STRUCTURAL =
-            REGISTRATE.block("boiler_heater_structure", BoilerHeaterStructuralBlock::new)
-                    .initialProperties(SharedProperties::netheriteMetal)
-                    .blockstate((c, p) -> p.getVariantBuilder(c.get())
-                            .forAllStatesExcept(BlockStateGen.mapToAir(p), BoilerHeaterStructuralBlock.FACING))
-                    .properties(p -> p.noOcclusion().sound(SoundType.EMPTY)
-                            .mapColor(MapColor.STONE))
-                    .transform(axeOrPickaxe())
-                    .lang("Boiler Heater")
-                    .register();
+    // TODO: add custom renderer. See: PipeAttachmentModel.putBracket(BlockState state)
+    // TODO: add removeElement() in BoilerHeaterBlock
 
     public static void register() {
     }

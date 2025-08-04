@@ -2,9 +2,10 @@ package net.muffin.complexified.block.entity;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.api.contraption.transformable.TransformableBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 
-import com.simibubi.create.content.fluids.tank.BoilerData;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -43,6 +44,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.muffin.complexified.block.custom.BoilerHeaterBlock;
 import net.muffin.complexified.block.custom.BoilerHeaterBlock.GrateCorner;
 import net.muffin.complexified.foundation.block.behaviour.ConnectivityHandlerShort;
+import net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater.HeatingElementBlockEntityBehaviour;
 import net.muffin.complexified.foundation.lang.ComplexifiedLang;
 import net.muffin.complexified.recipe.BoilerHeating;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +58,7 @@ import java.util.function.Consumer;
 
 import static java.lang.Math.abs;
 
-public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid {
+public class BoilerHeaterBlockEntity extends SmartBlockEntity implements TransformableBlockEntity, IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private static final int MAX_SIZE = 3;
@@ -67,6 +69,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
     protected BlockPos lastKnownPos;
     protected boolean updateConnectivity;
     protected boolean updateCapability;
+    protected boolean updatedBlockState;
     protected int width;
 
     private static final Object boilerHeatingRecipeKey = new Object();
@@ -86,6 +89,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
         fluidCapability = LazyOptional.of(() -> tankInventory);
         updateConnectivity = false;
         updateCapability = false;
+        updatedBlockState = false;
         width = 1;
         refreshCapability();
     }
@@ -165,6 +169,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
     private void onPositionChanged() {
         removeController(true);
         lastKnownPos = worldPosition;
+        setState();
     }
 
     protected void onFluidStackChanged(FluidStack newFluidStack) {
@@ -208,6 +213,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
         BlockState state = getBlockState();
         if (BoilerHeaterBlock.isHeater(state)) {
             state = state.setValue(BoilerHeaterBlock.HEATER_GRATE, GrateCorner.all);
+            this.getBehaviour(HeatingElementBlockEntityBehaviour.TYPE).updateHeatingElement(GrateCorner.all);
             getLevel().setBlock(worldPosition, state, 22);
         }
 
@@ -234,7 +240,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
         syncCooldown = SYNC_RATE;
     }
 
-    public void setGrate() {
+    public void setState() {
         for (int xOffset = 0; xOffset < width; xOffset++) {
             for (int zOffset = 0; zOffset < width; zOffset++) {
 
@@ -253,6 +259,13 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
 
                     grate = GrateCorner.mergeEdge(xEdge, zEdge);
                 }
+
+
+                if (level.getBlockEntity(pos) instanceof BoilerHeaterBlockEntity boilerBlockEntity) {
+                    boilerBlockEntity.getBehaviour(HeatingElementBlockEntityBehaviour.TYPE).updateHeatingElement(grate);
+                }
+
+
 
                 level.setBlock(pos, blockState.setValue(BoilerHeaterBlock.HEATER_GRATE, grate), 22);
                 level.getChunkSource()
@@ -309,6 +322,7 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
 
     @Override
     protected void read(CompoundTag compound, boolean clientPacket) {
+//        getBehaviour(HeatingElementBlockEntityBehaviour.TYPE).read(compound, clientPacket);
         super.read(compound, clientPacket);
 
         BlockPos controllerBefore = controller;
@@ -397,11 +411,10 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-//        inputTank = createInputTank();
-//        outputTank = createOutputTank();
-//        behaviours.add(inputTank);
-//        behaviours.add(outputTank);
+        behaviours.add(new HeatingElementBlockEntityBehaviour(this));
     }
+
+//    public boolean hasBlockStateChange()
 
     private SmartFluidTank createInputTank() {
         return new SmartFluidTank(getCapacityMultiplier(), this::onFluidStackChanged);
@@ -443,8 +456,11 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
         if (BoilerHeaterBlock.isHeater(state)) { // safety
             level.setBlock(getBlockPos(), state, 6);
         }
-        if (isController())
-            setGrate();
+
+        if (isController()) {
+            setState();
+        }
+
         onFluidStackChanged(tankInventory.getFluid());
         setChanged();
     }
@@ -569,6 +585,14 @@ public class BoilerHeaterBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     public Object getRecipeCacheKey() {return boilerHeatingRecipeKey;}
+
+    @Override
+    public void transform(BlockEntity blockEntity, StructureTransform transform) {
+        HeatingElementBlockEntityBehaviour elmentBehaviour = getBehaviour(HeatingElementBlockEntityBehaviour.TYPE);
+        if (elmentBehaviour != null) {
+            elmentBehaviour.transformElement(transform);
+        }
+    }
 
     public class Heating {
         protected boolean isHeatSupplier;

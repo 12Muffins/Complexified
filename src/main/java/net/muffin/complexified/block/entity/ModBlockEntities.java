@@ -14,12 +14,6 @@ public class ModBlockEntities {
             .renderer(() -> LinkBulbRenderer::new)
             .register();
 
-    public static final BlockEntityEntry<BoilerHeaterBlockEntityOld> BOILER_HEATER_OLD = Complexified.REGISTRATE
-            .blockEntity("industrial_heater", BoilerHeaterBlockEntityOld::new)
-            .validBlocks(ModBlocks.BOILER_HEATER_OLD, ModBlocks.BOILER_HEATER_STRUCTURAL)
-//            .renderer(() -> BoilerHeaterRenderer::new)
-            .register();
-
     public static final BlockEntityEntry<BoilerHeaterBlockEntity> BOILER_HEATER = Complexified.REGISTRATE
             .blockEntity("boiler_heater", BoilerHeaterBlockEntity::new)
             .visual(() -> BoilerHeaterVisual::new)

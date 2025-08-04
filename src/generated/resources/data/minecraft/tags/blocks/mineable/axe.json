@@ -2,8 +2,6 @@
   "values": [
     "c_complexified:andesite_machine",
     "c_complexified:brass_machine",
-    "c_complexified:industrial_heater",
-    "c_complexified:boiler_heater",
-    "c_complexified:boiler_heater_structure"
+    "c_complexified:boiler_heater"
   ]
 }

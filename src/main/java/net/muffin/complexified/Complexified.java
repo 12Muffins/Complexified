@@ -34,6 +34,8 @@ import static com.simibubi.create.impl.contraption.BlockMovementChecksImpl.regis
 @Mod(Complexified.MOD_ID)
 public class Complexified {
 
+    private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
     public static final String MOD_ID = "c_complexified";
     public static final String NAME = "Complexified";
     // private static final Logger LOGGER = LogUtils.getLogger();
@@ -91,6 +93,7 @@ public class Complexified {
     }
 
     public static void init(final FMLCommonSetupEvent event) {
+        ModFluids.registerFluidInteractions();
         event.enqueueWork(() -> {
             BoilerHeaters.registerDefaults();
         });
@@ -102,8 +105,8 @@ public class Complexified {
 
 
     public static CreateRegistrate registrate() {
-//        if (!STACK_WALKER.getCallerClass().getPackageName().startsWith("com.simibubi.create"))
-//            throw new UnsupportedOperationException("Other mods are not permitted to use create's registrate instance.");
+        if (!STACK_WALKER.getCallerClass().getPackageName().startsWith("net.muffin.complexified"))
+            throw new UnsupportedOperationException("Other mods are not permitted to use complexified's registrate instance.");
         return REGISTRATE;
     }
 

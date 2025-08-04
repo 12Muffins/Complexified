@@ -5,8 +5,7 @@
     "c_complexified:brass_machine",
     "c_complexified:sturdy_machine",
     "c_complexified:resin_extractor",
-    "c_complexified:industrial_heater",
     "c_complexified:boiler_heater",
-    "c_complexified:boiler_heater_structure"
+    "c_complexified:copper_heating_element"
   ]
 }

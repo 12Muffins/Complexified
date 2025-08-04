@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "priority": 1200,
+  "package": "net.muffin.complexified.foundation.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.complexified.refmap.json",
+  "plugin": "net.muffin.complexified.foundation.mixin.ComplexifiedMixinPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "PahoehoeEntityDamageMixin"
+  ]
+}

@@ -1,5 +1,6 @@
 package net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater;
 
+import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
@@ -22,11 +23,17 @@ public class BoilerHeaterGenerator extends SpecialBlockStateGen {
 
     @Override
     public <T extends Block> ModelFile getModel(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider prov, BlockState state) {
-        String suffix = state.getValue(BoilerHeaterBlock.HEATER_GRATE).getSerializedName();
+        BoilerHeaterBlock.HeaterElement elementState = state.getValue(BoilerHeaterBlock.HEATING_ELEMENT);
 
-        String modelName = "boiler_heater" + "_grate_" + suffix;
-        return prov.models()
-                .withExistingParent(modelName, prov.modLoc("block/boiler_heater/block"));
-//                .texture("5", prov.modLoc("block/boiler_heater/grade_side"));
+
+//        if (elementState != BoilerHeaterBlock.HeaterElement.none) {
+//            String suffix_element = state.getValue(BoilerHeaterBlock.HEATING_ELEMENT).getSerializedName();
+//            String modelName = "boiler_heater" + "_element_" + suffix_element/* + '_' + suffix_grate*/;
+//            return prov.models()
+//                    .withExistingParent(modelName, prov.modLoc("block/boiler_heater/block_heating_element"))
+//                    .texture("7", prov.modLoc("block/boiler_heater/heating_element/" + suffix_element + "_plate"))
+//                    .texture("8", prov.modLoc("block/boiler_heater/heating_element/" + suffix_element + "_fin"));
+//        }
+        return AssetLookup.partialBaseModel(ctx, prov);
     }
 }

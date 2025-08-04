@@ -1,3 +1,4 @@
+// hehe
 package net.muffin.complexified.tag;
 
 import com.simibubi.create.AllTags;
@@ -46,7 +47,7 @@ public class ModTags {
     public enum NameSpace {
 
         MOD(Complexified.MOD_ID, false, true),
-        //        TIC("tconstruct"),
+//        TIC("tconstruct"),
 //        QUARK("quark"),
 //        GS("galosphere"),
 //        CURIOS("curios"),
@@ -70,7 +71,8 @@ public class ModTags {
 
     public enum BlockTags {
         KINETIC_MACHINE,
-        MACHINE
+        MACHINE,
+        PAHOEHOE
         ;
 
         public final TagKey<Block> tag;
@@ -123,7 +125,8 @@ public class ModTags {
     public enum ItemTags {
         MECHANISM,
         INCOMPLETE_MECHANISM,
-        KINETIC_MECHANISM
+        KINETIC_MECHANISM,
+        HEATING_ELEMENT
         ;
 
         public final TagKey<Item> tag;
@@ -171,7 +174,8 @@ public class ModTags {
 
     public enum FluidTags {
 
-        RESIN(FORGE);
+        RESIN(FORGE),
+        PAHOEHOE;
 
         public final TagKey<Fluid> tag;
         public final boolean alwaysDatagen;

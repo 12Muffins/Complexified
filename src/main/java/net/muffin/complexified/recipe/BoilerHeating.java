@@ -14,8 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import net.muffin.complexified.block.entity.BoilerHeaterBlockEntityOld;
 
+import net.muffin.complexified.block.entity.BoilerHeaterBlockEntity;
 import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,86 +63,86 @@ public class BoilerHeating extends ProcessingRecipe<RecipeWrapper> {
         return getRequiredFluid().getMatchingFluidStacks().get(0).getFluid();
     }
 
-    public static boolean match(BoilerHeaterBlockEntityOld heater, BoilerHeating recipe) {
-        if (recipe.getFluidResults().isEmpty()) return false;
+//    public static boolean match(BoilerHeaterBlockEntity heater, BoilerHeating recipe) {
+//        if (recipe.getFluidResults().isEmpty()) return false;
+//
+//        return apply(heater, recipe, true);
+//    }
 
-        return apply(heater, recipe, true);
-    }
+//    private static boolean apply(BoilerHeaterBlockEntity heater, BoilerHeating recipe, boolean test) {
+//
+//        IFluidHandler availableFluids = heater.getCapability(ForgeCapabilities.FLUID_HANDLER)
+//                .orElse(null);
+//
+//        if (availableFluids == null)
+//            return false;
+//
+//        List<FluidIngredient> fluidIngredients = recipe.getFluidIngredients();
+//        List<FluidStack> recipeOutputFluids = new ArrayList<>();
+//
+//        int recipeScaler = test ? 5000 : heater.getRecipeScaler();
+//
+//        boolean fluidsAffected = false;
+//        for (boolean simulate : Iterate.trueAndFalse) {
+//            if (!simulate && test) {
+//                heater.setRecipeScaler(recipeScaler);
+//                return true;
+//            }
+//
+//            int[] extractedFluidsFromTank = new int[availableFluids.getTanks()];
+//
+//            FluidIngredients:
+//            for (FluidIngredient fluidIngredient : fluidIngredients) {
+//                int amountRequired = fluidIngredient.getRequiredAmount();
+//
+//                for (int tank = 0; tank < availableFluids.getTanks(); tank++) {
+//                    FluidStack fluidStack = availableFluids.getFluidInTank(tank);
+//                    if (simulate && fluidStack.getAmount() <= extractedFluidsFromTank[tank])
+//                        continue;
+//                    if (!fluidIngredient.test(fluidStack))
+//                        continue;
+//
+//                    if (simulate) {
+//                        recipeScaler = Math.min(Mth.floor((float) fluidStack.getAmount() / amountRequired), recipeScaler);
+//                        recipeScaler = Math.max(recipeScaler, 1);
+//                    }
+//
+//                    int drainedAmount = Math.min(recipeScaler * amountRequired, fluidStack.getAmount());
+//                    if (!simulate) {
+//                        fluidStack.shrink(drainedAmount);
+//                        fluidsAffected = true;
+//                    }
+//                    amountRequired = recipeScaler * amountRequired - drainedAmount;
+//                    if (amountRequired != 0)
+//                        continue;
+//                    extractedFluidsFromTank[tank] += drainedAmount;
+//                    continue FluidIngredients;
+//                }
+//
+//                // something wasn't found
+//                return false;
+//            }
+//            if (fluidsAffected) {
+//                heater.getBehaviour(SmartFluidTankBehaviour.INPUT).forEach(SmartFluidTankBehaviour.TankSegment::onFluidStackChanged);
+//                heater.getBehaviour(SmartFluidTankBehaviour.OUTPUT).forEach(SmartFluidTankBehaviour.TankSegment::onFluidStackChanged);
+//            }
+//
+//            if (simulate) {
+//                for (FluidStack fluidStack : recipe.getFluidResults()) {
+//                    if (!fluidStack.isEmpty()) recipeOutputFluids.add(fluidStack);
+//                }
+//            }
+//
+//            if (!heater.acceptOutputs(recipeOutputFluids, simulate))
+//                return false;
+//        }
+//
+//        return true;
+//    }
 
-    private static boolean apply(BoilerHeaterBlockEntityOld heater, BoilerHeating recipe, boolean test) {
-
-        IFluidHandler availableFluids = heater.getCapability(ForgeCapabilities.FLUID_HANDLER)
-                .orElse(null);
-
-        if (availableFluids == null)
-            return false;
-
-        List<FluidIngredient> fluidIngredients = recipe.getFluidIngredients();
-        List<FluidStack> recipeOutputFluids = new ArrayList<>();
-
-        int recipeScaler = test ? 5000 : heater.getRecipeScaler();
-
-        boolean fluidsAffected = false;
-        for (boolean simulate : Iterate.trueAndFalse) {
-            if (!simulate && test) {
-                heater.setRecipeScaler(recipeScaler);
-                return true;
-            }
-
-            int[] extractedFluidsFromTank = new int[availableFluids.getTanks()];
-
-            FluidIngredients:
-            for (FluidIngredient fluidIngredient : fluidIngredients) {
-                int amountRequired = fluidIngredient.getRequiredAmount();
-
-                for (int tank = 0; tank < availableFluids.getTanks(); tank++) {
-                    FluidStack fluidStack = availableFluids.getFluidInTank(tank);
-                    if (simulate && fluidStack.getAmount() <= extractedFluidsFromTank[tank])
-                        continue;
-                    if (!fluidIngredient.test(fluidStack))
-                        continue;
-
-                    if (simulate) {
-                        recipeScaler = Math.min(Mth.floor((float) fluidStack.getAmount() / amountRequired), recipeScaler);
-                        recipeScaler = Math.max(recipeScaler, 1);
-                    }
-
-                    int drainedAmount = Math.min(recipeScaler * amountRequired, fluidStack.getAmount());
-                    if (!simulate) {
-                        fluidStack.shrink(drainedAmount);
-                        fluidsAffected = true;
-                    }
-                    amountRequired = recipeScaler * amountRequired - drainedAmount;
-                    if (amountRequired != 0)
-                        continue;
-                    extractedFluidsFromTank[tank] += drainedAmount;
-                    continue FluidIngredients;
-                }
-
-                // something wasn't found
-                return false;
-            }
-            if (fluidsAffected) {
-                heater.getBehaviour(SmartFluidTankBehaviour.INPUT).forEach(SmartFluidTankBehaviour.TankSegment::onFluidStackChanged);
-                heater.getBehaviour(SmartFluidTankBehaviour.OUTPUT).forEach(SmartFluidTankBehaviour.TankSegment::onFluidStackChanged);
-            }
-
-            if (simulate) {
-                for (FluidStack fluidStack : recipe.getFluidResults()) {
-                    if (!fluidStack.isEmpty()) recipeOutputFluids.add(fluidStack);
-                }
-            }
-
-            if (!heater.acceptOutputs(recipeOutputFluids, simulate))
-                return false;
-        }
-
-        return true;
-    }
-
-    public static boolean apply(BoilerHeaterBlockEntityOld heater, BoilerHeating recipe) {
-        return apply(heater, recipe, false);
-    }
+//    public static boolean apply(BoilerHeaterBlockEntity heater, BoilerHeating recipe) {
+//        return apply(heater, recipe, false);
+//    }
 
     @Override
     public boolean matches(RecipeWrapper pContainer, Level pLevel) {

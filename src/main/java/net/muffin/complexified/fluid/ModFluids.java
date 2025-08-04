@@ -3,9 +3,10 @@ package net.muffin.complexified.fluid;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.AllFluids;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.decoration.palettes.AllPaletteStoneTypes;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import net.createmod.catnip.theme.Color;
@@ -15,14 +16,22 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.*;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidInteractionRegistry;
+import net.minecraftforge.fluids.FluidInteractionRegistry.InteractionInformation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.muffin.complexified.Complexified;
 import net.muffin.complexified.item.ComplexifiedCreativeModeTabs;
+import net.muffin.complexified.tag.ModTags;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
@@ -59,75 +68,46 @@ public class ModFluids {
 
     public static final FluidEntry<Pahoehoe.Flowing> PAHOEHOE =
             REGISTRATE.fluid("pahoehoe",
-                            new ResourceLocation(Complexified.MOD_ID, "fluid/pahoehoe_still"),
-                            new ResourceLocation(Complexified.MOD_ID, "fluid/pahoehoe_flow"),
-                            SolidRenderedPlaceableFluidType.create(0x573431,
-                                    () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()),
+                            ResourceLocation.fromNamespaceAndPath(Complexified.MOD_ID, "fluid/pahoehoe_still"),
+                            ResourceLocation.fromNamespaceAndPath(Complexified.MOD_ID, "fluid/pahoehoe_flow"),
+                            Pahoehoe.FluidType.create(0x573431,
+                                    () -> 1f / 32f),
                             Pahoehoe.Flowing::new
                     )
                     .lang("Pahoehoe")
-                    .properties(b -> b.viscosity(2000).fallDistanceModifier(1)
-                            .density(1400))
+                    .properties(b -> b
+                            .viscosity(10000)
+                            .fallDistanceModifier(1)
+                            .density(1400)
+                            .temperature(700)
+                            .adjacentPathType(null)
+                            .pathType(BlockPathTypes.LAVA)
+                            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL_LAVA)
+                            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
+                            .lightLevel(8)
+                    )
                     .fluidProperties(p -> p.levelDecreasePerBlock(2)
                             .tickRate(25)
                             .slopeFindDistance(3)
                             .explosionResistance(100f))
                     .source(Pahoehoe.Source::new)
-                    .block()
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10))
+                    .block(Pahoehoe.LiquidBlock::new)
+                    .tag(AllTags.AllBlockTags.FAN_PROCESSING_CATALYSTS_BLASTING.tag, ModTags.BlockTags.PAHOEHOE.tag)
+//                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10))
                     .build()
                     .bucket() // Add ItemTag
                     .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
                     .build()
                     .register();
 
-//    public static final FluidEntry<ForgeFlowingFluid.Flowing> PAHOEHOE =
-//            REGISTRATE.standardFluid("pahoehoe", SolidRenderedPlaceableFluidType.create(0x573431,
-//                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
-//                    .lang("Pahoehoe")
-//                    .properties(b -> b.viscosity(2000)
-//                            .density(1400))
-//                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
-//                            .tickRate(25)
-//                            .slopeFindDistance(3)
-//                            .explosionResistance(100f))
-//                    .source(Pahoehoe.Source::new)
-//                    .block()
-//                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10).randomTicks().liquid())
-//                    .build()
-//                    .bucket() // Add ItemTag
-//                    .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
-//                    .build()
-//                    .register();
-
-//    public static final FluidEntry<ForgeFlowingFluid.Flowing> PAHOEHOE =
-//            REGISTRATE.standardFluid("pahoehoe", SolidRenderedPlaceableFluidType.create(0x573431,
-//                            () -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
-//                    .lang("Pahoehoe")
-//                    .properties(b -> b.viscosity(2000)
-//                            .density(1400))
-//                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
-//                            .tickRate(25)
-//                            .slopeFindDistance(3)
-//                            .explosionResistance(100f))
-//                    .source(Pahoehoe.Flowing::new)
-//                    .block()
-//                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW).lightLevel((s) -> 10).randomTicks().liquid())
-//                    .build()
-//                    .bucket() // Add ItemTag
-//                    .tag(AllTags.forgeItemTag("buckets/pahoehoe"))
-//                    .build()
-//                    .register();
-
-
     public static void register() {
     }
 
 
-    private static class SolidRenderedPlaceableFluidType extends TintedFluidType {
+    protected static class SolidRenderedPlaceableFluidType extends TintedFluidType {
 
-        private Vector3f fogColor;
-        private Supplier<Float> fogDistance;
+        protected Vector3f fogColor;
+        protected Supplier<Float> fogDistance;
 
         public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
             return (p, s, f) -> {
@@ -138,7 +118,7 @@ public class ModFluids {
             };
         }
 
-        private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        protected SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
             super(properties, stillTexture, flowingTexture);
         }
 
@@ -235,63 +215,27 @@ public class ModFluids {
         }
     }
 
-//    public abstract class Pahoehoe extends ForgeFlowingFluid {
-//        public static class Flowing extends Pahoehoe {
-//            protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> pBuilder) {
-//                super.createFluidStateDefinition(pBuilder);
-//                pBuilder.add(LEVEL);
-//            }
-//
-//            public int getAmount(FluidState pState) {
-//                return pState.getValue(LEVEL);
-//            }
-//
-//            public boolean isSource(FluidState pState) {
-//                return false;
-//            }
-//        }
-//
-//        public static class Source extends Pahoehoe {
-//            public Source(Properties properties) {
-//                super(properties);
-//            }
-//
-//            public int getAmount(FluidState pState) {
-//                return 8;
-//            }
-//
-//            @Override
-//            protected void randomTick(Level pLevel, BlockPos pPos, FluidState pState, RandomSource pRandom) {
-//            }
-//
-//            @Override
-//            protected boolean isRandomlyTicking() {
-//                LOGGER.info("Called isRandomlyTicking()");
-//                return true;
-//            }
-//
-//            public boolean isSource(FluidState pState) {
-//                return true;
-//            }
-//        }
-//
-//        @Override
-//        public void animateTick(Level pLevel, BlockPos pPos, FluidState pState, RandomSource pRandom) {
-//            LOGGER.info("Called animateTick()");
-//
-//            BlockPos blockpos = pPos.above();
-//            if (pLevel.getBlockState(blockpos).isAir() && !pLevel.getBlockState(blockpos).isSolidRender(pLevel, blockpos)) {
-//                if (pRandom.nextInt(100) == 0) {
-//                    double d0 = (double)pPos.getX() + pRandom.nextDouble();
-//                    double d1 = (double)pPos.getY() + 1.0D;
-//                    double d2 = (double)pPos.getZ() + pRandom.nextDouble();
-//                    pLevel.addParticle(ParticleTypes.LAVA, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-//                    pLevel.playLocalSound(d0, d1, d2, SoundEvents.LAVA_POP, SoundSource.BLOCKS, 0.2F + pRandom.nextFloat() * 0.2F, 0.9F + pRandom.nextFloat() * 0.15F, false);
-//                }
-//                if (pRandom.nextInt(200) == 0) {
-//                    pLevel.playLocalSound(pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.LAVA_AMBIENT, SoundSource.BLOCKS, 0.2F + pRandom.nextFloat() * 0.2F, 0.9F + pRandom.nextFloat() * 0.15F, false);
-//                }
-//            }
-//        }
-//    }
+    public static void registerFluidInteractions() {
+        FluidInteractionRegistry.addInteraction(PAHOEHOE.getSource().getFluidType(), new InteractionInformation(
+                AllFluids.HONEY.get().getFluidType(),
+                fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState() :
+                        AllPaletteStoneTypes.LIMESTONE.getBaseBlock()
+                            .get()
+                            .defaultBlockState()
+        ));
+
+        FluidInteractionRegistry.addInteraction(PAHOEHOE.getSource().getFluidType(), new InteractionInformation(
+                AllFluids.CHOCOLATE.get().getFluidType(),
+                fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState() :
+                        AllPaletteStoneTypes.SCORIA.getBaseBlock()
+                                .get()
+                                .defaultBlockState()
+        ));
+
+        FluidInteractionRegistry.addInteraction(PAHOEHOE.get().getFluidType(), new InteractionInformation(
+                ForgeMod.WATER_TYPE.get(),
+                fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState() :
+                        Blocks.TUFF.defaultBlockState()
+        ));
+    }
 }

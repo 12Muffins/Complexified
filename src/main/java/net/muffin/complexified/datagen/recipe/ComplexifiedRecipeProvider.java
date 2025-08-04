@@ -46,10 +46,4 @@ public final class ComplexifiedRecipeProvider extends RecipeProvider {
             }
         });
     }
-
-    protected static class I {
-        static ItemLike industrial_heater() {
-            return ModBlocks.BOILER_HEATER_OLD.get();
-        }
-    }
 }

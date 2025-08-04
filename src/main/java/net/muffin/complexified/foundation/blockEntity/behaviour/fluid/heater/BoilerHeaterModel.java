@@ -1,12 +1,10 @@
 package net.muffin.complexified.foundation.blockEntity.behaviour.fluid.heater;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
-import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
-import com.simibubi.create.content.fluids.tank.FluidTankModel;
 import com.simibubi.create.foundation.block.connected.CTModel;
-import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
-import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.createmod.catnip.data.Iterate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -18,8 +16,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.muffin.complexified.ComplexifiedSpriteShifts;
+import net.muffin.complexified.block.custom.BoilerHeaterBlock;
+import net.muffin.complexified.block.custom.HeatingElementBlock;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import java.util.List;
 public class BoilerHeaterModel extends CTModel {
 
     protected static final ModelProperty<BoilerHeaterModel.CullData> CULL_PROPERTY = new ModelProperty<>();
+    protected static final ModelProperty<BoilerHeaterModel.HeatingElementModelData> ELEMENT_PROPERTY = new ModelProperty<>();
 
 
     public BoilerHeaterModel(BakedModel originalModel) {
@@ -39,6 +39,29 @@ public class BoilerHeaterModel extends CTModel {
                 ComplexifiedSpriteShifts.BOILER_HEATER_INNER_TANK,
                 ComplexifiedSpriteShifts.BOILER_HEATER_INNER_TANK_TOP,
                 ComplexifiedSpriteShifts.BOILER_HEATER_UNDERSIDE));
+    }
+
+    private void addQuads(List<BakedQuad> quads, BlockState state, Direction side, RandomSource rand, ModelData data,
+                          HeatingElementModelData heaterData, RenderType renderType) {
+        BakedModel heatingElement = heaterData.getElement();
+        if (heatingElement != null)
+            quads.addAll(heatingElement.getQuads(state, side, rand, data, renderType));
+    }
+
+    public static class HeatingElementModelData {
+        private BakedModel element;
+
+        public BakedModel getElement() {
+            return element;
+        }
+
+        public void putElement(BlockState state) {
+            if (state != null) {
+                this.element = Minecraft.getInstance()
+                        .getBlockRenderer()
+                        .getBlockModel(state);
+            }
+        }
     }
 
     @Override
@@ -53,6 +76,15 @@ public class BoilerHeaterModel extends CTModel {
                 continue;
             quads.addAll(super.getQuads(state, d, rand, extraData, renderType));
         }
+
+        if (extraData.has(ELEMENT_PROPERTY)) {
+            HeatingElementModelData heaterData = extraData.get(ELEMENT_PROPERTY);
+            quads = new ArrayList<>(quads);
+            if (heaterData != null) {
+                addQuads(quads, state, side, rand, extraData, heaterData, renderType);
+            }
+        }
+
         quads.addAll(super.getQuads(state, null, rand, extraData, renderType));
         return quads;
     }
@@ -61,10 +93,18 @@ public class BoilerHeaterModel extends CTModel {
     protected ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
                                                 ModelData blockEntityData) {
         super.gatherModelData(builder, world, pos, state, blockEntityData);
+        HeatingElementModelData elementData = new HeatingElementModelData();
         BoilerHeaterModel.CullData cullData = new BoilerHeaterModel.CullData();
+        HeatingElementBlockEntityBehaviour element = BlockEntityBehaviour.get(world, pos, HeatingElementBlockEntityBehaviour.TYPE);
+
+
+        if (element != null) {
+            elementData.putElement(element.getElement());
+        }
+
         for (Direction d : Iterate.horizontalDirections)
             cullData.setCulled(d, ConnectivityHandler.isConnected(world, pos, pos.relative(d)));
-        return builder.with(CULL_PROPERTY, cullData);
+        return builder.with(CULL_PROPERTY, cullData).with(ELEMENT_PROPERTY, elementData);
     }
 
     private static class CullData {

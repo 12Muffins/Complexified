@@ -74,9 +74,12 @@ public class DataGenTags {
     private static void genFluidTags(RegistrateTagsProvider<Fluid> provIn) {
         TagGen.CreateTagsProvider<Fluid> prov = new TagGen.CreateTagsProvider<>(provIn, Fluid::builtInRegistryHolder);
 
-        prov.tag(FluidTags.LAVA)
+        prov.tag(ModTags.FluidTags.PAHOEHOE.tag)
                 .add(ModFluids.PAHOEHOE.getSource())
                 .add(ModFluids.PAHOEHOE.get())
+        ;
+        prov.tag(FluidTags.LAVA)
+                .addTag(ModTags.FluidTags.PAHOEHOE.tag)
         ;
     }
 }

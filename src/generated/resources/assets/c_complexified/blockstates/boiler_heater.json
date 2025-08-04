@@ -1,34 +1,64 @@
 {
   "variants": {
-    "grate=all": {
-      "model": "c_complexified:block/boiler_heater_grate_all"
+    "grate=all,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=e": {
-      "model": "c_complexified:block/boiler_heater_grate_e"
+    "grate=all,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=n": {
-      "model": "c_complexified:block/boiler_heater_grate_n"
+    "grate=e,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=ne": {
-      "model": "c_complexified:block/boiler_heater_grate_ne"
+    "grate=e,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=none": {
-      "model": "c_complexified:block/boiler_heater_grate_none"
+    "grate=n,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=nw": {
-      "model": "c_complexified:block/boiler_heater_grate_nw"
+    "grate=n,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=s": {
-      "model": "c_complexified:block/boiler_heater_grate_s"
+    "grate=ne,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=se": {
-      "model": "c_complexified:block/boiler_heater_grate_se"
+    "grate=ne,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=sw": {
-      "model": "c_complexified:block/boiler_heater_grate_sw"
+    "grate=none,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
     },
-    "grate=w": {
-      "model": "c_complexified:block/boiler_heater_grate_w"
+    "grate=none,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=nw,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=nw,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=s,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=s,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=se,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=se,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=sw,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=sw,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=w,heating_element=copper": {
+      "model": "c_complexified:block/boiler_heater/block"
+    },
+    "grate=w,heating_element=none": {
+      "model": "c_complexified:block/boiler_heater/block"
     }
   }
 }

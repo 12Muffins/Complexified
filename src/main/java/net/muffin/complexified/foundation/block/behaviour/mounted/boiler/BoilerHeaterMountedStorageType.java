@@ -16,8 +16,8 @@ public class BoilerHeaterMountedStorageType extends MountedFluidStorageType<Boil
     @Override
     @Nullable
     public BoilerHeaterMountedStorage mount(Level level, BlockState state, BlockPos pos, @Nullable BlockEntity be) {
-        if (be instanceof BoilerHeaterBlockEntity heater && heater.isController()) {
-            return BoilerHeaterMountedStorage.fromTank(heater);
+        if (be instanceof BoilerHeaterBlockEntity heater) {
+            return BoilerHeaterMountedStorage.fromEntity(heater);
         }
 
         return null;
